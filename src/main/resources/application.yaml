@@ -1,0 +1,10 @@
+spring:
+    application:
+        name: dscatalog
+
+    profiles:
+        active: DEV
+    
+    jpa:
+        open-in-view: false
+        

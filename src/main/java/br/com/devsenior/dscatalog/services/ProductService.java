@@ -1,7 +1,5 @@
 package br.com.devsenior.dscatalog.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -13,6 +11,7 @@ import br.com.devsenior.dscatalog.dto.CategoryDTO;
 import br.com.devsenior.dscatalog.dto.ProductDTO;
 import br.com.devsenior.dscatalog.entities.Category;
 import br.com.devsenior.dscatalog.entities.Product;
+import br.com.devsenior.dscatalog.repositories.CategoryRepository;
 import br.com.devsenior.dscatalog.repositories.ProductRepository;
 import br.com.devsenior.dscatalog.services.exceptions.DataBaseException;
 import br.com.devsenior.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -22,13 +21,16 @@ public class ProductService implements IProductService {
     
     @Autowired
     private ProductRepository repository;
+    
+    @Autowired
+    private CategoryRepository CategoryRepository;
 
     @Transactional(readOnly = true)
     @Override
     public ProductDTO findById(Long id) {
         Product entity = repository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Recurson não encontrado!"));
-        return new ProductDTO(entity);
+        .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado!"));
+        return new ProductDTO(entity, entity.getCategories());
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +81,8 @@ public class ProductService implements IProductService {
         entity.setPrice(dto.getPrice());
         entity.setImgUrl(dto.getImgUrl());
         for (CategoryDTO catDto : dto.getCategories()) {
-            entity.getCategories().add(new Category(catDto.getId(), catDto.getName()))
+            Category category = CategoryRepository.getReferenceById(catDto.getId());
+            entity.getCategories().add(category);
         }
     }
 

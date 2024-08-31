@@ -1,12 +1,9 @@
 package br.com.devsenior.dscatalog.services;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.com.devsenior.dscatalog.dto.CategoryDTO;
-import br.com.devsenior.dscatalog.entities.Category;
 
 public class CategoryService implements ICategoryService {
 
