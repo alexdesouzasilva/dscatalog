@@ -54,7 +54,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDTO update(Long id, ProductDTO dto) {
         if(!repository.existsById(id)) {
-            throw new ResourceNotFoundException("Recurso não encontrado!");
+            throw new ResourceNotFoundException("Recurso não encontrado!" + id);
         }
         Product entity = repository.getReferenceById(id);
         dtoToEntity(dto, entity);
@@ -75,7 +75,6 @@ public class ProductService implements IProductService {
     }
 
     private void dtoToEntity(ProductDTO dto, Product entity) {
-        entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         entity.setPrice(dto.getPrice());
