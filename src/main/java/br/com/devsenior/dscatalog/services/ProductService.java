@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.devsenior.dscatalog.dto.CategoryDTO;
@@ -62,17 +63,19 @@ public class ProductService implements IProductService {
         return new ProductDTO(entity);
     }
 
-    @Override
-    public void delete(Long id) {
+    @Transactional(propagation = Propagation.SUPPORTS)
+	public void delete(Long id) {
         if(!repository.existsById(id)) {
             throw new ResourceNotFoundException("Recurso não encontrado!");
         }
-        try {
+        
+		try {
             repository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DataBaseException("Falha de violação de integridade");
-        }
-    }
+		} 
+		catch (DataIntegrityViolationException e) {
+			throw new DataBaseException("Integrity violation");
+		}
+	}
 
     private void dtoToEntity(ProductDTO dto, Product entity) {
         entity.setName(dto.getName());
